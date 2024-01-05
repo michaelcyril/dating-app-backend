@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .Serializers import *
+from .serializer import *
 from django.contrib.auth import authenticate, login, update_session_auth_hash
 from .models import *
 from rest_framework.generics import UpdateAPIView
@@ -35,7 +35,7 @@ class RegisterUser(APIView):
 # "email":"mike@gmail.com",
 # "password":"123",
 # "username":"mike",
-# "phone":"078676726",
+# "phone":"078676726"
 # }
 
 
@@ -69,7 +69,7 @@ class LoginView(APIView):
             return Response(response)
 
 # {
-#     "username":"mike",
+# "email":"mike@gmail.com",
 #     "password":"123"
 # }
 

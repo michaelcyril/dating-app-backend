@@ -1,7 +1,7 @@
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .Serializers import *
+from .serializer import *
 from .models import *
 
 
@@ -28,7 +28,7 @@ class ImageView(APIView):
             return Response({"isAccountValid": False})
 
 
-class DeleteUpdateImagePost:
+class DeleteUpdateImagePost(APIView):
     @staticmethod
     def get(request):
         imageId = request.GET.get("imageId")
@@ -67,7 +67,7 @@ class VideoView(APIView):
             return Response({"isAccountValid": False})
 
 
-class DeleteUpdateVideoPost:
+class DeleteUpdateVideoPost(APIView):
     @staticmethod
     def get(request):
         videoId = request.GET.get("videoId")

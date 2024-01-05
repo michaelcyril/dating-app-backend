@@ -1,7 +1,7 @@
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .Serializers import *
+from .serializer import *
 from .models import *
 from user_management.models import Account
 
