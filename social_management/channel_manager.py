@@ -7,7 +7,7 @@ import json
 class PostToChatChannel:
     def __init__(self, data):
         print(data)
-        self.channel_name, self.data = f"thread_reg", data
+        self.channel_name, self.data = f"chat_room_{data['chat_id']}", data
         print(self.channel_name)
         self.post_to_channel()
 

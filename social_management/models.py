@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from user_management.models import Account
+from django.conf import settings
 
 # Create your models here.
 class Like(models.Model):
@@ -21,6 +22,27 @@ class Like(models.Model):
         db_table = 'like'
 
 
+class Conversation(models.Model):
+    initiator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="convo_starter"
+    )
+    receiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="convo_participant"
+    )
+    start_time = models.DateTimeField(auto_now_add=True)
 
-# class Chat(models.Model):
-#     pass
+    class Meta:
+        db_table = "conversation"
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                              null=True, related_name='message_sender')
+    text = models.CharField(max_length=200, blank=True)
+    # attachment = models.FileField(blank=True)
+    conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE,)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-timestamp',)
+        db_table = "message"

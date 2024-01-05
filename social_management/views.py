@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializer import *
 from .models import *
-from user_management.models import Account
+from user_management.models import Account, User
+from django.db.models import Q
+from .channel_manager import PostToChatChannel
 
 
 class LikeView(APIView):
@@ -27,3 +29,48 @@ class LikeView(APIView):
             return Response(serializer.data)
         except Account.DoesNotExist:
             return Response([])
+
+
+class ConversationView(APIView):
+    @staticmethod
+    def post(request):
+        data = request.data
+        conversation = Conversation.objects.filter(Q(initiator=User.objects.get(id=data['initiator'])) and Q(receiver=User.objects.get(id=data['receiver'])))
+        if len(conversation)>=1:
+            return Response({"save": False, "message": "Conversation already exists"})
+        serialized = ConversationPostSerializer(data=data)
+        if serialized.is_valid():
+            serialized.save()
+            return Response({"save": True})
+
+    @staticmethod
+    def get(request, user_id):
+        queryset = Conversation.objects.filter(Q(initiator=User.objects.get(id=user_id)) or Q(receiver=User.objects.get(id=user_id)))
+        serialized = ConversationGetSerializer(instance=queryset, many=True)
+        return Response(serialized.data)
+
+class MessageView(APIView):
+    @staticmethod
+    def post(request):
+        serialized = MessagePostSerializer(data=request.data)
+        if serialized.is_valid():
+            serialized.save()
+            print(serialized.validated_data)
+            PostToChatChannel(serialized.validated_data)
+            return Response({"send": True})
+        return Response({"send": False})
+
+    @staticmethod
+    def get(request, conv_id):
+        queryset = Message.objects.filter(conversation_id=Conversation.objects.get(id=conv_id)).order_by('-timestamp')[:20]
+        serialized = MessageGetSerializer(instance=queryset, many=True)
+        return Response(serialized.data)
+
+
+
+
+# {
+#     "sender": "hhhhhhhhhhhh",
+#     "text": "Hello World ",
+#     "conversation_id": "hhhhhhhhhhhh"
+# }
