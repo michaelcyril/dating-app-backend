@@ -44,10 +44,14 @@ class ConversationView(APIView):
             return Response({"save": True})
 
     @staticmethod
-    def get(request, user_id):
-        queryset = Conversation.objects.filter(Q(initiator=User.objects.get(id=user_id)) or Q(receiver=User.objects.get(id=user_id)))
-        serialized = ConversationGetSerializer(instance=queryset, many=True)
-        return Response(serialized.data)
+    def get(request):
+        try:
+            user = User.objects.get(id=request.GET.get('user_id'))
+            queryset = Conversation.objects.filter(Q(initiator=user) or Q(receiver=user))
+            serialized = ConversationGetSerializer(instance=queryset, many=True)
+            return Response(serialized.data)
+        except:
+            return Response([])
 
 class MessageView(APIView):
     @staticmethod
@@ -61,11 +65,15 @@ class MessageView(APIView):
         return Response({"send": False})
 
     @staticmethod
-    def get(request, conv_id):
-        queryset = Message.objects.filter(conversation_id=Conversation.objects.get(id=conv_id)).order_by('-timestamp')[:20]
-        serialized = MessageGetSerializer(instance=queryset, many=True)
-        return Response(serialized.data)
-
+    def get(request):
+        conv_id = request.GET.get("conv_id")
+        try:
+            conv = Conversation.objects.get(id=conv_id)
+            queryset = Message.objects.filter(conversation_id=conv).order_by('-timestamp')[:20]
+            serialized = MessageGetSerializer(instance=queryset, many=True)
+            return Response(serialized.data)
+        except:
+            return Response([])
 
 
 
