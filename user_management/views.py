@@ -26,11 +26,25 @@ class RegisterUser(APIView):
                 message = {'status': False, 'message': 'username or email already exists'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
             userr = serializer.save()
+            acc = Account.objects.create(
+                user = userr,
+                location = "",
+                work = "",
+                bio = "Hey there i am using heartsync."
+            )
+            serialized = AccountPostSerializer(data=data)
+            if serialized.is_valid():
+                serialized.save()
             message = {'save': True}
             return Response(message)
         message = {'save': False, 'errors': serializer.errors}
         print(message)
         return Response(message)
+
+    @staticmethod
+    def get(request):
+        users  = User.objects.all()
+        return Response(UserSerializer(instance=users, many=True).data)
 # {
 # "email":"mike@gmail.com",
 # "password":"123",
@@ -157,29 +171,42 @@ class UpdateUserView(APIView):
 
 class AccountView(APIView):
     @staticmethod
-    def post(request):
-        data = request.data
-        serializer = AccountPostSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"save": True})
-        return Response({"save": False, "errors": serializer.errors})
+    def get(request, userId):
+        try:
+            user = User.objects.get(id=userId)
+            accounts = Account.objects.filter(user=user)
+            if len(accounts) == 1:
+                returned_data = Account.objects.get(user=user)
+                serialized = AccountGetSerializer(instance=returned_data, many=False)
+                return Response({"status": True, "data": serialized.data})
+            else:
+                data = {
+                    "user": user.id,
+                    "bio": "Hey there i am using heartsync.",
+                    "work": "",
+                    "location": ""
+                }
+                serialized = AccountPostSerializer(data=data)
+                if serialized.is_valid():
+                    serialized.save()
+                    return Response({"status": False})
+                else:
+                    print(serialized.errors)
+                    return Response({"status": False})
+        except User.DoesNotExist:
+            return Response({"status": False})
 
-    @staticmethod
-    def get(request):
-        queryset = Account.objects.all()
-        serializer = AccountGetSerializer(instance=queryset, many=True)
-        return Response(serializer.data)
 
 
 class DeleteUpdateAccount(APIView):
     @staticmethod
     def post(request):
-        data = request.data
+        data = request.POST
         try:
             account = Account.objects.get(id = data['id'])
             account.location = data['location']
             account.work  = data['work']
+            account.profile  = request.FILES.get('profile')
             account.dob = data['dob']
             account.bio = data['bio']
             account.save()
@@ -203,6 +230,7 @@ class DeleteUpdateAccount(APIView):
 #     "id": "SSSSLLLSLSLL",
 #     "location": "Kimara",
 #     "work": "Fundi",
+#     "profile": "Fundi",
 #     "dob": "21-12-23",
 #     "bio": "ddd"
 # }

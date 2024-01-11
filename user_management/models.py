@@ -30,12 +30,13 @@ class User(AbstractUser):
 # Create your models here.
 class Account(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    location = models.CharField(max_length=250)
-    work = models.CharField(max_length=250, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    location = models.CharField(max_length=250, null=True, blank=True)
+    work = models.CharField(max_length=250, null=True, blank=True)
     profile = models.ImageField(upload_to="uploads/", null=True, blank=True)
-    dob = models.DateTimeField()
+    dob = models.DateTimeField(null=True)
     bio = models.TextField()
-    created_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f''

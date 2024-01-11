@@ -36,10 +36,10 @@ class AccountPostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
         fields = [
+            'user',
             'location',
             'work',
             'profile',
-            'age',
             'bio',
         ]
 
