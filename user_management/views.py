@@ -203,11 +203,14 @@ class DeleteUpdateAccount(APIView):
     def post(request):
         data = request.POST
         try:
+            print(data['id'])
             account = Account.objects.get(id = data['id'])
+            print("GGGGGGGGGGGG")
             account.location = data['location']
             account.work  = data['work']
-            account.profile  = request.FILES.get('profile')
-            account.dob = data['dob']
+            if 'profile' in request.FILES:
+                account.profile = request.FILES.get('profile')
+            # account.dob = data['dob']
             account.bio = data['bio']
             account.save()
             return Response({"update": True})
