@@ -205,7 +205,6 @@ class DeleteUpdateAccount(APIView):
         try:
             print(data['id'])
             account = Account.objects.get(id = data['id'])
-            print("GGGGGGGGGGGG")
             account.location = data['location']
             account.work  = data['work']
             if 'profile' in request.FILES:
