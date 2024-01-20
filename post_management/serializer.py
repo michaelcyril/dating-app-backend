@@ -23,6 +23,7 @@ class VideoPostSerializer(serializers.ModelSerializer):
         model = Video
         fields = [
             'account',
+            'thumbnail',
             'video',
         ]
 

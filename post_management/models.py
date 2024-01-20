@@ -30,6 +30,7 @@ class Video(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     video = models.FileField(upload_to="uploads/post_video/", null=True, blank=True)
+    thumbnail = models.ImageField(upload_to="uploads/post_video/thumbnails/", null=True, blank=True)
     status = models.CharField(choices=STATUS, default='INACTIVE', max_length=20)
     created_at = models.DateTimeField(auto_now=True)
 
