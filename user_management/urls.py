@@ -11,4 +11,5 @@ urlpatterns = [
     path('get-create-account/<slug:userId>', AccountView.as_view()),
     path('delete-update-account', DeleteUpdateAccount.as_view()),
     path('change-user-status', ChangeUserStatus.as_view()),
+    path('all-account/<slug:accountId>', AllAccountView.as_view()),
 ]

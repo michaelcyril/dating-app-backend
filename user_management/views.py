@@ -166,7 +166,13 @@ class UpdateUserView(APIView):
 
             return Response({'message': 'Not Authorized to Update This User'})
 
-
+class AllAccountView(APIView):
+    @staticmethod
+    def get(request, accountId):
+        # userId = "9f57a7ab-3cf6-4086-95d5-fa987b9bbf14"
+        queryset = Account.objects.all().exclude(id=accountId)
+        serialized = AccountGetSerializer(instance=queryset, many=True)
+        return Response(serialized.data)
 
 
 class AccountView(APIView):
