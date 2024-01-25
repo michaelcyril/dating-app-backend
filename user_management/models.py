@@ -10,8 +10,16 @@ class User(AbstractUser):
         ("ACTIVE", "Active user"),
         ("INACTIVE", "Inactive user"),
     )
+    GENDER_STATUS =(
+        ("MALE","user is male"),
+        ("FEMALE","user is female"),
+        ("NONE","user is female"),
+        
+        
+    )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=100, unique=True)
+    gender = models.CharField(choices=GENDER_STATUS,default='NONE',max_length=20, null=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=12, unique=True)
     is_active = models.BooleanField(default=True)
