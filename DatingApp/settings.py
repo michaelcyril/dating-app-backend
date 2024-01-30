@@ -114,7 +114,8 @@ DATABASES = {
     'PASSWORD': 's6hVtcaqbN9T',
     'HOST': 'ep-summer-hall-a64x5rub.us-west-2.aws.neon.tech',
     'PORT': '5432',
-    'OPTIONS': {'sslmode': 'require'},
+    'OPTIONS': {'sslmode': 'require',
+                'client_encoding': 'UTF8'},
   }
 }
 
