@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -58,9 +60,20 @@ class MessageView(APIView):
     def post(request):
         serialized = MessagePostSerializer(data=request.data)
         if serialized.is_valid():
-            serialized.save()
-            print(serialized.validated_data)
-            PostToChatChannel(serialized.validated_data)
+            data = serialized.save()
+            print("TTTTTTTTTTTTTTTT")
+            toSocket = {
+                "id": data.id,
+                "sender": data.sender.id,
+                'text': data.text,
+                'conversation_id': data.conversation_id.id,
+                'timestamp': data.timestamp
+            }
+            toSocket['id'] = str(toSocket['id'])
+            toSocket['sender'] = str(toSocket['sender'])
+            toSocket['conversation_id'] = str(toSocket['conversation_id'])
+            toSocket['timestamp'] = toSocket['timestamp'].isoformat()
+            PostToChatChannel(toSocket)
             return Response({"send": True})
         return Response({"send": False})
 
@@ -69,9 +82,9 @@ class MessageView(APIView):
         conv_id = request.GET.get("conv_id")
         try:
             conv = Conversation.objects.get(id=conv_id)
-            queryset = Message.objects.filter(conversation_id=conv).order_by('-timestamp')[:20]
-            serialized = MessageGetSerializer(instance=queryset, many=True)
-            return Response(serialized.data)
+            queryset = Message.objects.values('id', 'sender', 'text', 'conversation_id', 'timestamp').filter(conversation_id=conv).order_by('-timestamp')[:20]
+            # serialized = MessageGetSerializer(instance=queryset, many=True)
+            return Response(queryset)
         except:
             return Response([])
 
