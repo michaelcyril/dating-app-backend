@@ -49,8 +49,10 @@ class ConversationView(APIView):
     def get(request):
         try:
             user = User.objects.get(id=request.GET.get('user_id'))
-            queryset = Conversation.objects.filter(Q(initiator=user) or Q(receiver=user))
+            queryset = Conversation.objects.filter(Q(receiver=user) | Q(initiator=user))
             serialized = ConversationGetSerializer(instance=queryset, many=True)
+            print("DDDDDDD")
+            print(serialized.data)
             return Response(serialized.data)
         except:
             return Response([])
