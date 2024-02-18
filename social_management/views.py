@@ -37,13 +37,16 @@ class ConversationView(APIView):
     @staticmethod
     def post(request):
         data = request.data
-        conversation = Conversation.objects.filter(Q(initiator=User.objects.get(id=data['initiator'])) and Q(receiver=User.objects.get(id=data['receiver'])))
+        print(data)
+        user1 = User.objects.get(id=data['initiator'])
+        user2 = User.objects.get(id=data['receiver'])
+        conversation = Conversation.objects.filter((Q(initiator=user1) & Q(receiver=user2)) | (Q(initiator=user2) & Q(receiver=user1)))
         if len(conversation)>=1:
-            return Response({"save": False, "message": "Conversation already exists"})
+            return Response({"save": False, "conv_id": conversation[0].id})
         serialized = ConversationPostSerializer(data=data)
         if serialized.is_valid():
-            serialized.save()
-            return Response({"save": True})
+            returned_data = serialized.save()
+            return Response({"save": True, "conv_id": returned_data.id})
 
     @staticmethod
     def get(request):
