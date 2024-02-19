@@ -74,12 +74,17 @@ class MessageView(APIView):
                 'conversation_id': data.conversation_id.id,
                 'timestamp': data.timestamp
             }
+            print(toSocket)
             toSocket['id'] = str(toSocket['id'])
             toSocket['sender'] = str(toSocket['sender'])
             toSocket['conversation_id'] = str(toSocket['conversation_id'])
             toSocket['timestamp'] = toSocket['timestamp'].isoformat()
             PostToChatChannel(toSocket)
-            return Response({"send": True})
+            # print(toSocket['text'])
+            return Response({"send": True,
+                             "message": toSocket['text'],
+                             })
+          
         return Response({"send": False})
 
     @staticmethod
@@ -88,7 +93,12 @@ class MessageView(APIView):
         try:
             conv = Conversation.objects.get(id=conv_id)
             queryset = Message.objects.values('id', 'sender', 'text', 'conversation_id', 'timestamp').filter(conversation_id=conv).order_by('-timestamp')[:20]
+            # for msg in queryset:
+            #    print(msg['text'])
             # serialized = MessageGetSerializer(instance=queryset, many=True)
+            print("response")
+            
+            print(Response(queryset))
             return Response(queryset)
         except:
             return Response([])
