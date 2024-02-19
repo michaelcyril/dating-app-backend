@@ -244,6 +244,30 @@ class DeleteUpdateAccount(APIView):
 # }
 
 
+class UpdateDBO(APIView):
+    @staticmethod
+    def post(request):
+        data = request.data
+        try:
+            account = Account.objects.get(id=data['id'])
+            account.dob = data['dob']
+            account.location = data['location']
+            account.work = data['work']
+            account.save()
+            return Response({'update': True})
+        except Account.DoesNotExist:
+            return Response({"update": False})
+
+
+
+# {
+#     "id": "SSSSLLLSLSLL",
+#     "location": "Kimara",
+#     "work": "Fundi",
+#     "dob": "21-12-23",
+# }
+
+
 class ChangeUserStatus(APIView):
     @staticmethod
     def post(request):
