@@ -103,27 +103,26 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-# # To use Neon with Django, you have to create a Project on Neon and specify the project connection settings in your settings.py in the same way as for standalone Postgres.
-
 # DATABASES = {
-#   'default': {
-#     'ENGINE': 'django.db.backends.postgresql',
-#     'NAME': 'datingDB',
-#     'USER': 'adammushy',
-#     'PASSWORD': 's6hVtcaqbN9T',
-#     'HOST': 'ep-summer-hall-a64x5rub.us-west-2.aws.neon.tech',
-#     'PORT': '5432',
-#     'OPTIONS': {'sslmode': 'require','client_encoding': 'UTF8'},
-#     'ATOMIC_REQUESTS': True,
-#     'CHARSET': 'UTF-8',
-#   }
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
 # }
+
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'datingdb',
+    'USER': 'postgres',
+    'PASSWORD': '2024d@tingApp',
+    'HOST': '157.245.109.105',
+    'PORT': '5432',
+    'OPTIONS': {'sslmode': 'require','client_encoding': 'UTF8'},
+    'ATOMIC_REQUESTS': True,
+    'CHARSET': 'UTF-8',
+  }
+}
 
 
 # Password validation
