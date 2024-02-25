@@ -12,6 +12,7 @@ class Like(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     account = models.ForeignKey(Account,related_name="liked_account", on_delete=models.CASCADE)
     likedBy = models.ForeignKey(Account, related_name="liked_by",on_delete=models.CASCADE)
+    is_connected = models.BooleanField(default=False)
     status = models.CharField(choices=STATUS, default='INACTIVE', max_length=20)
     created_at = models.DateTimeField(auto_now=True)
 

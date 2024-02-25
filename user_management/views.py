@@ -60,7 +60,6 @@ class LoginView(APIView):
     def post(request):
         email = request.data.get('email')
         password = request.data.get('password')
-        print('Data: ', email, password)
         user = authenticate(email=email, password=password)
         if user is not None:
             login(request, user)
@@ -197,7 +196,6 @@ class AccountView(APIView):
                     serialized.save()
                     return Response({"status": False})
                 else:
-                    print(serialized.errors)
                     return Response({"status": False})
         except User.DoesNotExist:
             return Response({"status": False})
@@ -209,7 +207,6 @@ class DeleteUpdateAccount(APIView):
     def post(request):
         data = request.POST
         try:
-            print(data['id'])
             account = Account.objects.get(id = data['id'])
             account.location = data['location']
             account.work  = data['work']
