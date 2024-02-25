@@ -244,6 +244,12 @@ class DeleteUpdateAccount(APIView):
 # }
 
 
+class CheckNetwork(APIView):
+    @staticmethod
+    def get(request):
+        return Response({})
+
+
 class UpdateDBO(APIView):
     @staticmethod
     def post(request):

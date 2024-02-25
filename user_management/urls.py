@@ -13,4 +13,6 @@ urlpatterns = [
     path('update-dob-account', UpdateDBO.as_view()),
     path('change-user-status', ChangeUserStatus.as_view()),
     path('all-account/<slug:accountId>', AllAccountView.as_view()),
+
+    path('check-network', CheckNetwork.as_view()),
 ]
