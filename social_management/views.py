@@ -15,8 +15,10 @@ class LikeView(APIView):
     def post(request):
         data = request.data
         try:
-            account = Account.objects.get(id=data['account'])
+            print(data)
             likedBy = Account.objects.get(id=data['likedBy'])
+            print("*****************")
+            account = Account.objects.get(id=data['account'])
             likes = Like.objects.filter(Q(account=account) & Q(likedBy=likedBy))
             if len(likes)>=1:
                 return Response({"like": False})
@@ -32,7 +34,8 @@ class LikeView(APIView):
                     likednew.save()
                 return Response({"like": True})
             return Response({"like": False})
-        except:
+        except Exception as e:
+            print(e)
             return Response({"like": False})
 
 
