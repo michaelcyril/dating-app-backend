@@ -14,6 +14,7 @@ class Image(models.Model):
     image = models.ImageField(upload_to="uploads/post_images/", null=True, blank=True)
     status = models.CharField(choices=STATUS, default='INACTIVE', max_length=20)
     created_at = models.DateTimeField(auto_now=True)
+    binary_data = models.BinaryField()
 
     def __str__(self):
         return f''
