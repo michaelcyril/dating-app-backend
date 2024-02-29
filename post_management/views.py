@@ -10,10 +10,17 @@ class ImageView(APIView):
     @staticmethod
     def post(request):
         data = request.data
+        print(data)
         serializer = ImagePostSerializer(data=data)
         if serializer.is_valid():
+            
+            print("pppppppp")
+            
             serializer.save()
+            
             return Response({"save": True})
+        print(serializer.errors)
+        
         return Response({"save": False, "errors": serializer.errors})
 
     @staticmethod

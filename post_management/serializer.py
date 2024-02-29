@@ -3,7 +3,9 @@ from .models import *
 
 
 class ImagePostSerializer(serializers.ModelSerializer):
-    binary_data = serializers.FileField(required=False)
+    # binary_data = serializers.FileField(required=False)
+    binary_data = serializers.CharField(required=False)
+    
     class Meta:
         model = Image
         fields = [
@@ -14,12 +16,24 @@ class ImagePostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         binary_data = validated_data.pop('binary_data', None)
+        print("before decode")
+        print(binary_data)
+        
+        
         instance = super().create(validated_data)
 
         if binary_data:
-            instance.binary_data = binary_data.read()
+            # instance.binary_data = binary_data.read()
+            # instance.save()
+            # binary_data = base64.b64decode(binary_data)
+            # print("after decode")
+            # print(binary_data)
+            # instance.binary_data = binary_data
+            # instance.save()
+            # print("the instance")
+            instance.binary_data = binary_data
             instance.save()
-
+            print(instance)
         return instance
 
 
