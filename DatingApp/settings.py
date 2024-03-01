@@ -110,21 +110,47 @@ REST_FRAMEWORK = {
 #     }
 # }
 
+# DATABASES = {
+#   'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': 'datingdb',
+#     'USER': 'postgres',
+#     'PASSWORD': '2024d@tingApp',
+#     'HOST': '157.245.109.105',
+#     'PORT': '5432',
+#     'OPTIONS': {'sslmode': 'require','client_encoding': 'UTF8'},
+#     'ATOMIC_REQUESTS': True,
+#     'CHARSET': 'UTF-8',
+#   }
+# }
+
+# DATABASES = {
+#   'default': {
+#     'ENGINE': 'django.db.backends.postgresql',
+#     'NAME': 'datingdb',
+#     'USER': 'postgres',
+#     'PASSWORD': '1234',
+#     'HOST': 'localhost',
+#     'PORT': '5432',
+#     'OPTIONS': {'client_encoding': 'UTF8'},
+#     'ATOMIC_REQUESTS': True,
+#     'CHARSET': 'UTF-8',
+#   }
+# }
+
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'datingdb',
+    'NAME': 'dating',
     'USER': 'postgres',
-    'PASSWORD': '2024d@tingApp',
-    'HOST': '157.245.109.105',
+    'PASSWORD': '1234',
+    'HOST': '45.55.39.205',
     'PORT': '5432',
-    'OPTIONS': {'sslmode': 'require','client_encoding': 'UTF8'},
+    'OPTIONS': {'client_encoding': 'UTF8'},
     'ATOMIC_REQUESTS': True,
     'CHARSET': 'UTF-8',
   }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
