@@ -160,6 +160,7 @@ USE_I18N = True
 USE_TZ = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+DATA_UPLOAD_MAX_MEMORY_SIZE = 409600000
 
 # STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
