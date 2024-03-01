@@ -58,10 +58,14 @@ class VideoView(APIView):
     @staticmethod
     def post(request):
         data = request.data
+        
         serializer = VideoPostSerializer(data=data)
+        print(data)
         if serializer.is_valid():
             serializer.save()
             return Response({"save": True})
+        print(serializer.errors)
+        
         return Response({"save": False, "errors": serializer.errors})
 
     @staticmethod

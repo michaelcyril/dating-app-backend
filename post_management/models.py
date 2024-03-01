@@ -25,7 +25,8 @@ class Image(models.Model):
     status = models.CharField(choices=STATUS, default='INACTIVE', max_length=20)
     created_at = models.DateTimeField(auto_now=True)
     # binary_data = models.BinaryField(blank=True,null=True)
-    binary_data = models.CharField(max_length=1000000, blank=True)
+    # binary_data = models.CharField(max_length=10000000000, blank=True, null=True)
+    binary_data =models.TextField()
 
     def __str__(self):
         return f''
@@ -45,6 +46,7 @@ class Video(models.Model):
     thumbnail = models.ImageField(upload_to="uploads/post_video/thumbnails/", null=True, blank=True)
     status = models.CharField(choices=STATUS, default='INACTIVE', max_length=20)
     created_at = models.DateTimeField(auto_now=True)
+    binary_data=models.TextField()
 
     def __str__(self):
         return f''
