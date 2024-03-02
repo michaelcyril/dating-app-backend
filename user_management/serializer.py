@@ -42,6 +42,7 @@ class AccountPostSerializer(serializers.ModelSerializer):
             'work',
             'profile',
             'bio',
+            'tags',
         ]
 
 

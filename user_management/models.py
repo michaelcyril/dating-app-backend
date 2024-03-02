@@ -35,6 +35,12 @@ class User(AbstractUser):
         db_table = 'user'
 
 
+class Tag(models.Model):
+    name =  models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.name
+
 # Create your models here.
 class Account(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -45,6 +51,7 @@ class Account(models.Model):
     dob = models.DateTimeField(null=True)
     bio = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    tags = models.ManyToManyField(Tag,blank=True)
 
     def __str__(self):
         return f''

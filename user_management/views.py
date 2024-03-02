@@ -30,7 +30,7 @@ class RegisterUser(APIView):
                 user = userr,
                 location = "",
                 work = "",
-                bio = "Hey there i am using heartsync."
+                bio = "Hey there i am using heartsync.",
             )
             serialized = AccountPostSerializer(data=data)
             if serialized.is_valid():
@@ -214,6 +214,7 @@ class DeleteUpdateAccount(APIView):
                 account.profile = request.FILES.get('profile')
             # account.dob = data['dob']
             account.bio = data['bio']
+            
             account.save()
             return Response({"update": True})
         except Account.DoesNotExist:

@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from firebase_admin import initialize_app, credentials
+from google.auth import load_credentials_from_file
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,6 +52,7 @@ INSTALLED_APPS = [
     'post_management',
     'social_management',
     'rest_framework.authtoken',
+    'fcm_django',
 ]
 
 MIDDLEWARE = [
@@ -103,12 +106,12 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # DATABASES = {
 #   'default': {
@@ -138,19 +141,7 @@ REST_FRAMEWORK = {
 #   }
 # }
 
-DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'dating',
-    'USER': 'postgres',
-    'PASSWORD': '1234',
-    'HOST': '45.55.39.205',
-    'PORT': '5432',
-    'OPTIONS': {'client_encoding': 'UTF8'},
-    'ATOMIC_REQUESTS': True,
-    'CHARSET': 'UTF-8',
-  }
-}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -195,6 +186,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -202,4 +194,41 @@ CHANNEL_LAYERS = {
             "hosts": [("127.0.0.1", 6379)],
         },
     },
+}
+
+file_relative_path = "serviceAccountKey.json"
+file_absolute_path = BASE_DIR / file_relative_path
+
+
+
+
+class CustomFirebaseCredentials(credentials.ApplicationDefault):
+    def __init__(self, account_file_path: str):
+        super().__init__()
+        self._account_file_path = account_file_path
+
+    def _load_credential(self):
+        if not self._g_credential:
+            self._g_credential, self._project_id = load_credentials_from_file(self._account_file_path,
+                                                                              scopes=credentials._scopes)
+            
+            
+
+# 'CUSTOM_GOOGLE_APPLICATION_CREDENTIALS' ='f'
+custom_credentials = CustomFirebaseCredentials(os.getenv('file_absolute_path'))
+FIREBASE_MESSAGING_APP = initialize_app(custom_credentials, name='messaging')
+
+FCM_DJANGO_SETTINGS = {
+     # an instance of firebase_admin.App to be used as default for all fcm-django requests
+     # default: None (the default Firebase app)
+    "DEFAULT_FIREBASE_APP": FIREBASE_MESSAGING_APP,
+     # default: _('FCM Django')
+    "APP_VERBOSE_NAME": "What ever name",
+     # true if you want to have only one active device per registered user at a time
+     # default: False
+    "ONE_DEVICE_PER_USER": False,
+     # devices to which notifications cannot be sent,
+     # are deleted upon receiving error response from FCM
+     # default: False
+    "DELETE_INACTIVE_DEVICES": False,
 }
