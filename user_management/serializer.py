@@ -51,3 +51,25 @@ class AccountGetSerializer(serializers.ModelSerializer):
         model = Account
         fields = '__all__'
         depth = 2
+
+
+#   For tag
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ['name']
+
+class AccountTagUpdateSerializer(serializers.ModelSerializer):
+    tags = serializers.ListField(child=serializers.DictField(), required=True)
+
+    class Meta:
+        model = Account
+        fields = ['id', 'tags']
+
+    def update(self, instance, validated_data):
+        tags_data = validated_data.pop('tags', [])
+        instance.tags.clear()  # Clear existing tags
+        for tag_data in tags_data:
+            tag, _ = Tag.objects.get_or_create(name=tag_data['name'])
+            instance.tags.add(tag)
+        return instance

@@ -205,20 +205,41 @@ class AccountView(APIView):
 class DeleteUpdateAccount(APIView):
     @staticmethod
     def post(request):
-        data = request.POST
+        data = request.data
         try:
-            account = Account.objects.get(id = data['id'])
-            account.location = data['location']
-            account.work  = data['work']
+            account = Account.objects.get(id=data['id'])
+        except Account.DoesNotExist:
+            return Response({"error": "Account not found", "update": False})
+        serializer = AccountTagUpdateSerializer(account, data=data)
+        if serializer.is_valid():
+            print("******************sss*")
+            # Update regular fields
+            account.location = data.get('location', account.location)
+            account.work = data.get('work', account.work)
             if 'profile' in request.FILES:
-                account.profile = request.FILES.get('profile')
-            # account.dob = data['dob']
-            account.bio = data['bio']
-            
+                account.profile = request.FILES['profile']
+            account.bio = data.get('bio', account.bio)
+            # Update tags
+            serializer.save()
+
             account.save()
             return Response({"update": True})
-        except Account.DoesNotExist:
-            return Response({"update": False})
+        return Response({"update": False, "errors": serializer.errors})
+    # def post(request):
+    #     data = request.POST
+    #     try:
+    #         account = Account.objects.get(id = data['id'])
+    #         account.location = data['location']
+    #         account.work  = data['work']
+    #         if 'profile' in request.FILES:
+    #             account.profile = request.FILES.get('profile')
+    #         # account.dob = data['dob']
+    #         account.bio = data['bio']
+    #
+    #         account.save()
+    #         return Response({"update": True})
+    #     except Account.DoesNotExist:
+    #         return Response({"update": False})
 
     @staticmethod
     def get(request):
@@ -314,3 +335,29 @@ class UpdateLatLongView(APIView):
 #     "long": ""
 # }
 
+
+
+class AccountTagUpdateView(APIView):
+    @staticmethod
+    def post(request):
+        try:
+            account_id = request.data.get('account')
+            account = Account.objects.get(id=account_id)
+        except Account.DoesNotExist:
+            return Response({"update": False, "message": "Account Does Not Exists"})
+
+        serializer = AccountTagUpdateSerializer(account, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# {
+#   "account": "d6a91d0f-1f05-4b70-9c38-2483b920d1af",
+#   "tags": [
+#     {"name": "Python"},
+#     {"name": "Django"},
+#     {"name": "REST"}
+#   ]
+# }
