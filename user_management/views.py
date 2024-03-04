@@ -292,4 +292,25 @@ class ChangeUserStatus(APIView):
 # }
 
 
+class UpdateLatLongView(APIView):
+    @staticmethod
+    def post(request):
+        data = request.data
+        try:
+            account = Account.objects.get(id=data['accountId'])
+            account.lat = data['lat']
+            account.long = data['long']
+            account.save()
+            return Response({"update": True})
+
+        except:
+            return Response({"update": False})
+
+
+
+# {
+#     "accountId": "",
+#     "lat": "",
+#     "long": ""
+# }
 

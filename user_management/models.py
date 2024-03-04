@@ -52,6 +52,8 @@ class Account(models.Model):
     bio = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     tags = models.ManyToManyField(Tag,blank=True)
+    lat = models.CharField(max_length=250, null=True, blank=True)
+    long = models.CharField(max_length=250, null=True, blank=True)
 
     def __str__(self):
         return f''
