@@ -16,5 +16,4 @@ urlpatterns = [
 
     path('check-network', CheckNetwork.as_view()),
     path('update-lat-long', UpdateLatLongView.as_view()),
-    # path('update-account-tags', UpdateLatLongView.as_view()),
 ]

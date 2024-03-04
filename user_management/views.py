@@ -206,13 +206,20 @@ class DeleteUpdateAccount(APIView):
     @staticmethod
     def post(request):
         data = request.data
+        print(data)
         try:
             account = Account.objects.get(id=data['id'])
         except Account.DoesNotExist:
             return Response({"error": "Account not found", "update": False})
-        serializer = AccountTagUpdateSerializer(account, data=data)
+        id_value = data['id']
+        tags_list = [{'name': tag[1]} for tag in data.items() if tag[0].startswith('tags')]
+        result = {
+            "id": id_value,
+            "tags": tags_list
+        }
+        print(result)
+        serializer = AccountTagUpdateSerializer(account, data=result)
         if serializer.is_valid():
-            print("******************sss*")
             # Update regular fields
             account.location = data.get('location', account.location)
             account.work = data.get('work', account.work)
@@ -221,25 +228,9 @@ class DeleteUpdateAccount(APIView):
             account.bio = data.get('bio', account.bio)
             # Update tags
             serializer.save()
-
             account.save()
             return Response({"update": True})
         return Response({"update": False, "errors": serializer.errors})
-    # def post(request):
-    #     data = request.POST
-    #     try:
-    #         account = Account.objects.get(id = data['id'])
-    #         account.location = data['location']
-    #         account.work  = data['work']
-    #         if 'profile' in request.FILES:
-    #             account.profile = request.FILES.get('profile')
-    #         # account.dob = data['dob']
-    #         account.bio = data['bio']
-    #
-    #         account.save()
-    #         return Response({"update": True})
-    #     except Account.DoesNotExist:
-    #         return Response({"update": False})
 
     @staticmethod
     def get(request):

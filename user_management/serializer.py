@@ -60,7 +60,7 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 class AccountTagUpdateSerializer(serializers.ModelSerializer):
-    tags = serializers.ListField(child=serializers.DictField(), required=True)
+    tags = TagSerializer(many=True)  # Nested serializer for tags
 
     class Meta:
         model = Account
@@ -68,8 +68,20 @@ class AccountTagUpdateSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         tags_data = validated_data.pop('tags', [])
-        instance.tags.clear()  # Clear existing tags
+        instance.tags.clear()
+        print(len(tags_data))
         for tag_data in tags_data:
-            tag, _ = Tag.objects.get_or_create(name=tag_data['name'])
-            instance.tags.add(tag)
+            print("Tag Data:", tag_data)
+            tag_name = tag_data.get('name')
+            if tag_name:
+                tag, _ = Tag.objects.get_or_create(name=tag_name)
+                instance.tags.add(tag)
+            else:
+                print("Error: Tag name not found in tag data")
         return instance
+        # tags_data = validated_data.pop('tags', [])
+        # instance.tags.clear()  # Clear existing tags
+        # for tag_data in tags_data:
+        #     tag, _ = Tag.objects.get_or_create(name=tag_data['name'])
+        #     instance.tags.add(tag)
+        # return instance
