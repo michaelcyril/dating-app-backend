@@ -6,4 +6,5 @@ urlpatterns = [
     path('like-user', LikeView.as_view()),
     path('conversation-view', ConversationView.as_view()),
     path('message-view', MessageView.as_view()),
+    path('conversation-to-seen-view', SeenView.as_view()),
 ]

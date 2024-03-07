@@ -17,7 +17,6 @@ class LikeView(APIView):
         try:
             print(data)
             likedBy = Account.objects.get(id=data['likedBy'])
-            print("*****************")
             account = Account.objects.get(id=data['account'])
             likes = Like.objects.filter(Q(account=account) & Q(likedBy=likedBy))
             if len(likes)>=1:
@@ -85,6 +84,13 @@ class MessageView(APIView):
         serialized = MessagePostSerializer(data=request.data)
         if serialized.is_valid():
             data = serialized.save()
+            conversation = Conversation.objects.get(id=data.conversation_id.id)
+            print("Check broooooooooooooooooooooooooooooooo")
+            print(data.conversation_id.id)
+            conversation.is_seen = False
+            conversation.last_message_user = data.sender.id
+            print(ConversationGetSerializer(instance=conversation, many=False).data)
+            conversation.save()
             toSocket = {
                 "id": data.id,
                 "sender": data.sender.id,
@@ -120,3 +126,22 @@ class MessageView(APIView):
 #     "text": "Hello World ",
 #     "conversation_id": "hhhhhhhhhhhh"
 # }
+
+
+class SeenView(APIView):
+    @staticmethod
+    def post(request):
+        data = request.data
+        try:
+            converssation = Conversation.objects.get(id=data['conversation_id'])
+            converssation.is_seen = True
+            converssation.save()
+            return Response({"updated": True})
+        except:
+            return Response({"updated": False})
+
+
+# {
+#     "conversation_id": "hhhhhhhhhhhh"
+# }
+

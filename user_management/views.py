@@ -352,3 +352,21 @@ class AccountTagUpdateView(APIView):
 #     {"name": "REST"}
 #   ]
 # }
+
+
+class DeleteUser(APIView):
+    @staticmethod
+    def post(request):
+        data = request.data
+        try:
+            user = User.objects.get(id=data['userId'])
+            account.delete()
+            return Response({"delete": True})
+
+        except:
+            return Response({"delete": False})
+
+
+# {
+#     "userId": "",
+# }

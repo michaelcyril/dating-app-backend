@@ -31,8 +31,9 @@ class Conversation(models.Model):
     receiver = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="convo_participant"
     )
-    
     start_time = models.DateTimeField(auto_now_add=True)
+    is_seen = models.BooleanField(default=False)
+    last_message_user = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         db_table = "conversation"
