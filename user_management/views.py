@@ -78,6 +78,7 @@ class LoginView(APIView):
                 'login': False,
                 'msg': 'User doesnot exist',
             }
+            return Response(response)
         else:
             response = {
                 'login': False,
