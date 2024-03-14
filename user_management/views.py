@@ -74,7 +74,7 @@ class LoginView(APIView):
             }
 
             return Response(response)
-        elif email2 is None:
+        elif user is None:
             response = {
                 'login': False,
                 'msg': 'User doesnot exist',
@@ -124,12 +124,15 @@ class ChangePasswordView(UpdateAPIView):
 
     def get_object(self, queryset=None):
         obj = self.request.user
+        print("user")
+        print("obj")
+        
         return obj
 
     def update(self, request, *args, **kwargs):
         self.object = self.get_object()
         serializer = self.get_serializer(data=request.data)
-
+        print(serializer)
         if serializer.is_valid():
             # Check old password
             if not self.object.check_password(serializer.data.get("old_password")):
@@ -143,9 +146,12 @@ class ChangePasswordView(UpdateAPIView):
                 'message': 'Password updated successfully',
                 'data': []
             }
-
+            print('response')
+            print(response)
             return Response(response)
-
+        print("errors")
+        print(serializer.errors)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
