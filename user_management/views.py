@@ -73,7 +73,7 @@ class LoginView(APIView):
             }
 
             return Response(response)
-        elif user is None:
+        elif email is None:
             response = {
                 'login': False,
                 'msg': 'User doesnot exist',
