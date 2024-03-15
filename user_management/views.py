@@ -114,6 +114,46 @@ class UserInformation(APIView):
             return Response({'message': 'Wrong Request!'})
 
 
+# class ChangePasswordView(UpdateAPIView):
+#     """
+#     An endpoint for changing password.
+#     """
+#     serializer_class = ChangePasswordSerializer
+#     model = User
+#     permission_classes = (IsAuthenticated,)
+
+#     def get_object(self, queryset=None):
+#         obj = self.request.user
+#         print("user")
+#         print("obj")
+        
+#         return obj
+
+#     def update(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         serializer = self.get_serializer(data=request.data)
+#         print(serializer)
+#         if serializer.is_valid():
+#             # Check old password
+#             if not self.object.check_password(serializer.data.get("old_password")):
+#                 return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+#             # set_password also hashes the password that the user will get
+#             self.object.set_password(serializer.data.get("new_password"))
+#             self.object.save()
+#             response = {
+#                 'status': 'success',
+#                 'code': status.HTTP_200_OK,
+#                 'message': 'Password updated successfully',
+#                 'data': []
+#             }
+#             print('response')
+#             print(response)
+#             return Response(response)
+#         print("errors")
+#         print(serializer.errors)
+        
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class ChangePasswordView(UpdateAPIView):
     """
     An endpoint for changing password.
@@ -122,17 +162,38 @@ class ChangePasswordView(UpdateAPIView):
     model = User
     permission_classes = (IsAuthenticated,)
 
+    def check_token_validity(self, request):
+        # Extract the token from the request headers
+        auth_header = request.headers.get('Authorization')
+        if auth_header is None:
+            return False
+
+        token = auth_header.split(' ')[1]  # Assuming the token is in the format 'Bearer <token>'
+
+        # Check if the token exists in the database
+        try:
+            token_obj = Token.objects.get(key=token)
+        except Token.DoesNotExist:
+            return False
+
+        # Check if the token has expired
+        if token_obj.created < token_obj.created - timedelta(days=1):  # Change the timedelta as needed
+            return False
+
+        return True
+
     def get_object(self, queryset=None):
         obj = self.request.user
-        print("user")
-        print("obj")
-        
         return obj
 
     def update(self, request, *args, **kwargs):
+        # Check token validity before proceeding
+        if not self.check_token_validity(request):
+            return Response({"error": "Invalid or expired token"}, status=status.HTTP_401_UNAUTHORIZED)
+
         self.object = self.get_object()
         serializer = self.get_serializer(data=request.data)
-        print(serializer)
+
         if serializer.is_valid():
             # Check old password
             if not self.object.check_password(serializer.data.get("old_password")):
@@ -146,15 +207,11 @@ class ChangePasswordView(UpdateAPIView):
                 'message': 'Password updated successfully',
                 'data': []
             }
-            print('response')
-            print(response)
             return Response(response)
-        print("errors")
-        print(serializer.errors)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+        
 class UpdateUserView(APIView):
     permission_classes = [AllowAny]
 
