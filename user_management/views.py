@@ -8,6 +8,7 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from .models import *
 from rest_framework.generics import UpdateAPIView
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.models import  User
 
 
 class RegisterUser(APIView):
@@ -61,7 +62,7 @@ class LoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
         user = authenticate(email=email, password=password)
-        email2 = authenticate(email =email)
+     
         if user is not None:
             login(request, user)
             user_id = User.objects.get(email=email)
@@ -235,14 +236,28 @@ class UpdateUserView(APIView):
 
             return Response({'message': 'Not Authorized to Update This User'})
 
+# class AllAccountView(APIView):
+#     @staticmethod
+#     def get(request, accountId):
+#         # userId = "9f57a7ab-3cf6-4086-95d5-fa987b9bbf14"
+#         queryset = Account.objects.all().exclude(id=accountId)
+#         serialized = AccountGetSerializer(instance=queryset, many=True)
+#         return Response(serialized.data)
+
 class AllAccountView(APIView):
     @staticmethod
     def get(request, accountId):
-        # userId = "9f57a7ab-3cf6-4086-95d5-fa987b9bbf14"
-        queryset = Account.objects.all().exclude(id=accountId)
-        serialized = AccountGetSerializer(instance=queryset, many=True)
-        return Response(serialized.data)
+    # Exclude the specified account and efficiently fetch related users
+        queryset = Account.objects.exclude(id=accountId).select_related('user')
 
+        # Serialize the accounts, including user data
+        serialized = AccountGetSerializer(instance=queryset, many=True)
+
+    # Iterate through the serialized data and append last_login time for each user
+        for account_data in serialized.data:
+            account_data['user']['last_login'] = account_data['user']['last_login']
+
+        return Response(serialized.data)
 
 class AccountView(APIView):
     @staticmethod

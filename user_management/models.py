@@ -61,3 +61,18 @@ class Account(models.Model):
     class Meta:
         db_table = 'account'
 
+
+# class TrashBin(models.Model):
+#     id = models.CharField(max_length=255, primary_key=True)
+#     location = models.CharField(max_length=255)
+#     work = models.CharField(max_length=255)
+#     lat = models.FloatField()
+#     long = models.FloatField()
+#     bio = models.CharField(max_length=255)
+
+#     def __str__(self):
+#         return self.id
+    
+#     class Meta:
+#         db_table = 'trash'
+        

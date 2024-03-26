@@ -17,4 +17,5 @@ urlpatterns = [
     path('check-network', CheckNetwork.as_view()),
     path('update-lat-long', UpdateLatLongView.as_view()),
     path('delete-user-account', DeleteUser.as_view()),
+    # path('delete-update-bin', TrashBinView.as_view()),
 ]
