@@ -85,3 +85,8 @@ class AccountTagUpdateSerializer(serializers.ModelSerializer):
         #     tag, _ = Tag.objects.get_or_create(name=tag_data['name'])
         #     instance.tags.add(tag)
         # return instance
+
+# class TrashBinSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = TrashBin
+#         fields = '__all__'

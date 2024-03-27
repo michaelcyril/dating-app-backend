@@ -74,6 +74,12 @@ class LoginView(APIView):
             }
 
             return Response(response)
+        if user is None:
+            response = {
+                'login': False,
+                'msg': 'User doesnot exist',
+            }
+            return Response(response)
         else:
             response = {
                 'login': False,
@@ -247,6 +253,7 @@ class DeleteUpdateAccount(APIView):
             serializer.save()
             account.save()
             return Response({"update": True})
+        print(serializer.errors)
         return Response({"update": False, "errors": serializer.errors})
 
     @staticmethod
